@@ -2,6 +2,7 @@ package com.shorten.controller;
 
 import com.shorten.common.DefaultHttpResponse;
 import com.shorten.common.code.BaseCode;
+import com.shorten.common.util.XssFilter;
 import com.shorten.model.LongUrlResponse;
 import com.shorten.model.ShortenUrlReq;
 import com.shorten.service.ShortenUrlService;
@@ -30,7 +31,11 @@ public class ShortenUrlController {
             return new DefaultHttpResponse<>(BaseCode.ERR_PARAM);
         }
 
-        System.out.println("come here");
+        req.setUrl(XssFilter.XssReplace(req.getUrl()));
+
+        if(!req.getUrl().startsWith("HTTP") && !req.getUrl().startsWith("HTTPS"))
+            return new DefaultHttpResponse<>(BaseCode.ERR_PARAM);
+
         String existUrl = shortenUrlService.existUrl(req.getUrl());
 
         if(existUrl != null){
@@ -47,7 +52,6 @@ public class ShortenUrlController {
     @GetMapping("/{shortUrl}")
     public DefaultHttpResponse<LongUrlResponse> getLongUrl(@PathVariable(value = "shortUrl")String shortUrl ){
 
-        log.debug("come here {}",shortUrl);
         if(shortUrl == null) return new DefaultHttpResponse<>(BaseCode.ERR_PARAM);
 
         //db check by url

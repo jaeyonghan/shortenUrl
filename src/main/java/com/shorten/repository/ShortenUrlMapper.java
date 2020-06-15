@@ -8,5 +8,8 @@ import org.springframework.stereotype.Repository;
 public interface ShortenUrlMapper {
     String selectShortenUrl(String longUrl);
     String selectLongUrl(String shortUrl);
+    boolean isRegisteredLongUrl(String longURL);
+    boolean isRegisteredShortUrl(String ShortUrl);
+    void registUrl(String longUrl, String shortUrl);
 
 }
