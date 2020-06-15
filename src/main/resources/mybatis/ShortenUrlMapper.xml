@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shorten.repository.ShortenUrlMapper">
+
+    <insert id="registurl">
+        INSERT INTO FOLLOW(MEMBER_NO, FOLLOW_MEMBER_NO) VALUES(#{memberNo}, #{targetMemberNo})
+    </insert>
+
+    <update id="updateCount">
+
+    </update>
+
+    <select id="selectShortenUrl" resultType="java.lang.String">
+        SELECT SHORT_URL
+        FROM TB_URL
+        WHERE LONG_URL = #{longUrl}
+        ;
+    </select>
+
+    <select id="selectLongUrl" resultType="java.lang.String">
+        SELECT LONG_URL
+        FROM TB_URL
+        WHERE SHORT_URL = #{shortUrl}
+        ;
+    </select>
+
+
+
+</mapper>
