@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>URL Shortening</title>
+</head>
+<body>
+<div align="center">
+    <table style="border: collapse; height: 200px">
+        <tbody>
+        <tr>
+            <td colspan="2"><h1>Shortening Url link</h1></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td><input id="longURL" type="text" style= "width:500px"; placeholder="insert URL (ex: https://www.musinsa.com)"/></td>
+            <td><button id="getShortURLBtn" onclick="getShortenURL()">Get Short URL</button></td>
+        </tr>
+        <tr>
+            <td><input id="shortUrl" type="text" style= "width:500px" placeholder="insert short Url (ex: mu.sa/dkfifkds)"/></td>
+            <td><button id="goLink" onclick="golink()">go link by ShortUrl</button></td>
+        </tr>
+        <tr>
+            <td colspan="2" style="heigh: 35px">
+                <div id="messageBox">
+                    <span id="message" style="font-weight: bold">http:// 혹은 https://로 시작하는 URL을 입력해주시기 바랍니다.</span>
+                    &nbsp;
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+function getShortenURL()  {
+	var longURL = $("#longURL").val();
+	var data1 = {"long_url" : longURL };
+
+	$.ajax({
+		contentType: "application/json",
+		dataType: "json",
+		data : JSON.stringify(data1),
+		url: '/shorten',
+		type: "POST",
+		success: function(response) {
+            if (response.return_code == 0) {
+            $("#shortUrl").val(response.result);
+            }
+        },
+		error: function (error) {
+			console.log(error);
+		}
+	});
+}
+
+function golink(){
+//해당 부분의 구현이 미비 합니다.
+    var goUrl = $("#shortUrl").val();
+    goUrl = goUrl.replace("mu.sa/","");
+    alert(goUrl);
+    var data1 = {"short_url" : goUrl };
+    var link;
+	$.ajax({
+		contentType: "application/json",
+		dataType: "json",
+		data : JSON.stringify(data1),
+		url: '/shorten',
+		type: "GET",
+		success: function(response) {
+            if (response.return_code == 0) {
+            link = response.result.longUrl;
+            }
+        },
+		error: function (error) {
+			console.log(error);
+		}
+	});
+	alert(link);
+	if(link == null){
+	return;
+	}
+
+    window.open(link);
+}
+
+$("#longURL").keyup(
+		function (event) {
+			if (event.keyCode == 13) {
+				getShortenURL();
+			}
+		});
+</script>
+</body>
+</html>

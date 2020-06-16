@@ -20,8 +20,6 @@ public class ShortenUrlServiceImpl implements ShortenUrlService {
 
     private ShortenUrlMapper shortenUrlMapper;
 
-
-
     ShortenUrlServiceImpl(ShortenUrlMapper shortenUrlMapper){
         this.shortenUrlMapper = shortenUrlMapper;
     }
@@ -32,43 +30,21 @@ public class ShortenUrlServiceImpl implements ShortenUrlService {
     }
 
     @Override
-    public String existUrl(String longUrl) {
+    public String convertShortenUrl(String longUrl) throws NoSuchAlgorithmException {
 
-        System.out.println("came impl");
-        String result = shortenUrlMapper.selectShortenUrl(longUrl);
-
-        System.out.println("result is :"+result);
-        return result;
-    }
-
-    @Override
-    public DefaultHttpResponse<LongUrlResponse> selectLongUrl(String shortUrl) {
-        DefaultHttpResponse<LongUrlResponse> response = new DefaultHttpResponse<>(BaseCode.SUCCESS);
-
-        LongUrlResponse longUrlResponse = new LongUrlResponse();
-
-        String longUrl = shortenUrlMapper.selectLongUrl(shortUrl);
-        log.debug("long url is : {}", longUrl);
-        longUrlResponse.setLongUrl(longUrl);
-        response.setResult(longUrlResponse);
-        return response;
-    }
-
-    @Override
-    public String shorten(String longURL) throws NoSuchAlgorithmException {
         SHA256 sha256 = new SHA256();
         Base62 base62 = new Base62();
-
         String shorteningKey = "";
 
-        if (shortenUrlMapper.isRegisteredLongUrl(longURL)) {
-            return shortenUrlMapper.selectShortenUrl(longURL);
+        if (shortenUrlMapper.isRegisteredLongUrl(longUrl)) {
+            shortenUrlMapper.updateSelectCount(longUrl);
+            return shortenUrlMapper.selectShortenUrl(longUrl);
         }
 
-        String sha256Hash = sha256.encode(longURL.getBytes());
+        String sha256Hash = sha256.encode(longUrl.getBytes());
 
         for (int i=0; i<=sha256Hash.length()-SUB_STRING_LENGTH; i++) {
-            String digits = sha256Hash.substring(i, i + SUB_STRING_LENGTH);
+            String digits = sha256Hash.substring(i, i+SUB_STRING_LENGTH);
             long longKey = Long.parseLong(digits, 16);
 
             if (longKey >= MAX) {
@@ -77,13 +53,27 @@ public class ShortenUrlServiceImpl implements ShortenUrlService {
 
             shorteningKey = base62.encode(longKey);
             if (shortenUrlMapper.isRegisteredShortUrl(shorteningKey)) {
-                log.debug("exist key");
+                log.info("exist key : {}", shorteningKey);
             } else {
-                shortenUrlMapper.registUrl(shorteningKey, longURL);
+                shortenUrlMapper.registUrl(longUrl, shorteningKey);
                 break;
             }
         }
         return shorteningKey;
+    }
+
+    @Override
+    public DefaultHttpResponse<LongUrlResponse> selectLongUrl(String shortUrl) {
+
+        DefaultHttpResponse<LongUrlResponse> response = new DefaultHttpResponse<>(BaseCode.SUCCESS);
+
+        LongUrlResponse longUrlResponse = new LongUrlResponse();
+
+        String longUrl = shortenUrlMapper.selectLongUrl(shortUrl);
+        longUrlResponse.setLongUrl(longUrl);
+        response.setResult(longUrlResponse);
+
+        return response;
     }
 
 

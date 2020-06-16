@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class ShortenUrlReq {
+public class LongUrlReq {
 
-    @JsonProperty("long_url")
-    private String longUrl;
+    @JsonProperty("short_url")
+    private String shortUrl;
 }

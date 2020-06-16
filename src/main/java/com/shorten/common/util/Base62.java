@@ -7,7 +7,7 @@ public class Base62 {
 	public String encode(long param) {
 		StringBuffer sb = new StringBuffer();
 		do {
-			sb.append(CODEC.charAt((int) (param % RADIX)));
+			sb.append(CODEC.charAt((int)(param % RADIX)));
 			param /= RADIX;
 		} while (param > 0);
 		return sb.toString();

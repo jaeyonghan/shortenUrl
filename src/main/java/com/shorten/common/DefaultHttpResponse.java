@@ -6,7 +6,6 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 @Data
-@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -17,7 +16,7 @@ public class DefaultHttpResponse<T> {
     @JsonProperty("return_message")
     String returnMessage;
 
-    @JsonProperty("context")
+    @JsonProperty("result")
     T result;
 
     public DefaultHttpResponse(BaseCode baseCode) {
