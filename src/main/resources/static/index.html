@@ -57,10 +57,11 @@ function getShortenURL()  {
 }
 
 function golink(){
-//해당 부분의 구현이 미비 합니다.
+    //해당 부분의 구현이 미비 합니다.
     var goUrl = $("#shortUrl").val();
-    goUrl = goUrl.replace("mu.sa/","");
-    alert(goUrl);
+    //parameter 오류로 인한 처리를 위해 남겨둠. 
+    //goUrl = goUrl.replace("mu.sa/",""); 
+
     var data1 = {"short_url" : goUrl };
     var link;
 	$.ajax({
