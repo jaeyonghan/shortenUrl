@@ -48,7 +48,7 @@ public class ShortenUrlController {
 
     @GetMapping("/")
     public DefaultHttpResponse<LongUrlResponse> getLongUrl(@RequestBody LongUrlReq req){
-        log.debug("getLongUrl req is1213 : {}", req);
+        log.debug("getLongUrl req is1213121212 : {}", req);
 
 
         if(req == null) return new DefaultHttpResponse<>(BaseCode.ERR_PARAM);
